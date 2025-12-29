@@ -11,8 +11,8 @@ interface HoloOverlayProps {
 }
 
 export function HoloOverlay({ x, y, isFlipped = false, touchTiltX = 0, touchTiltY = 0 }: HoloOverlayProps) {
-  // Use the real logo from public folder
-  const logoPattern = '/logo.svg';
+  // Simple dot pattern instead of logo to avoid 404 issues
+  const dotPattern = 'data:image/svg+xml,%3Csvg width="20" height="20" xmlns="http://www.w3.org/2000/svg"%3E%3Ccircle cx="10" cy="10" r="2" fill="%23ffffff" opacity="0.3"/%3E%3C/svg%3E';
 
   return (
     <div className="absolute inset-0 z-10 pointer-events-none rounded-xl overflow-hidden">
@@ -23,7 +23,7 @@ export function HoloOverlay({ x, y, isFlipped = false, touchTiltX = 0, touchTilt
       <animated.div 
         className="absolute inset-[-50%] w-[200%] h-[200%] opacity-25 mix-blend-color-dodge"
         style={{
-          backgroundImage: `url("${logoPattern}")`,
+          backgroundImage: `url("${dotPattern}")`,
           backgroundSize: '120px 120px', // Larger = fewer logos
           transform: to([x, y], (xVal, yVal) => 
             `translate(${xVal * 30}px, ${yVal * 30}px) rotate(-10deg)`
@@ -35,7 +35,7 @@ export function HoloOverlay({ x, y, isFlipped = false, touchTiltX = 0, touchTilt
       <animated.div 
         className="absolute inset-[-50%] w-[200%] h-[200%] opacity-15 mix-blend-overlay"
         style={{
-          backgroundImage: `url("${logoPattern}")`,
+          backgroundImage: `url("${dotPattern}")`,
           backgroundSize: '120px 120px', // Larger = fewer logos
           backgroundPosition: '60px 60px', // Offset
           transform: to([x, y], (xVal, yVal) => 

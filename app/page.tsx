@@ -11,7 +11,7 @@ import { StarField } from '@/components/ui/StarField';
 import { FestivalEffects } from '@/components/ui/FestivalEffects';
 
 export default function Home() {
-  const { x, y, values, requestAccess, isMobile, permissionGranted, needsPermission } = useVncSensor();
+  const { x, y } = useVncSensor();
 
   return (
     <main className="bg-black text-white overflow-hidden font-sans selection:bg-pink-500/30">
@@ -32,20 +32,6 @@ export default function Home() {
           </animated.div>
         </div>
         
-        {/* Permission Request Button (iOS) */}
-        {isMobile && needsPermission && !permissionGranted && (
-          <button
-            onClick={requestAccess}
-            className="absolute bottom-24 px-6 py-3 bg-white text-black font-bold rounded-full hover:bg-gray-200 transition-colors shadow-lg"
-          >
-            Enable Device Motion
-          </button>
-        )}
-        
-        {/* Mobile Hint */}
-        {/* <div className="absolute bottom-12 left-0 w-full text-center text-white/30 text-xs pointer-events-none animate-pulse">
-          {permissionGranted ? 'TILT DEVICE TO EXPLORE' : 'TAP TO ENABLE MOTION SENSORS'}
-        </div> */}
         <div className="mt-12 text-center space-y-3">
              <div className="flex items-center justify-center gap-2">
                <div className="w-1 h-1 rounded-full bg-blue-400 animate-pulse" />
