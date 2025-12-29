@@ -1,6 +1,5 @@
 'use client';
 
-import { Lanyard } from '@/components/vnc/Lanyard';
 import { BentoGrid } from '@/components/bento/BentoGrid';
 import { VncCard } from '@/components/vnc/VncCard';
 import { useVncSensor } from '@/hooks/useVncSensor';
@@ -12,12 +11,22 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-black text-white overflow-hidden font-sans selection:bg-pink-500/30">
       
-      {/* Mobile View: Lanyard Physics */}
-      <div className="lg:hidden w-full h-screen fixed inset-0">
-        <Lanyard />
+      {/* Mobile View: Centered Card with Tilt */}
+      <div className="lg:hidden w-full h-screen fixed inset-0 flex flex-col items-center justify-center bg-gradient-to-b from-gray-900 to-black">
+        <div className="relative perspective-1000">
+          <animated.div
+            style={{
+              transform: to([x, y], (xVal, yVal) => 
+                `rotateX(${yVal * -20}deg) rotateY(${xVal * 20}deg)`
+              )
+            }}
+          >
+            <VncCard x={x} y={y} isFloating />
+          </animated.div>
+        </div>
         
         {/* Mobile Hint */}
-        <div className="absolute bottom-8 left-0 w-full text-center text-white/30 text-xs pointer-events-none animate-pulse">
+        <div className="absolute bottom-12 left-0 w-full text-center text-white/30 text-xs pointer-events-none animate-pulse">
           TILT DEVICE TO EXPLORE
         </div>
       </div>

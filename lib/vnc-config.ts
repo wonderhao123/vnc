@@ -17,7 +17,6 @@ export const VNC_DATA = {
   },
   theme: {
     primaryHolo: "linear-gradient(135deg, #ff0080, #7928ca, #0070f3)",
-    lanyardColor: "#333",
     noiseOpacity: 0.15,
     physics: { stiffness: 260, damping: 20 }
   },
