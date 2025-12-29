@@ -4,12 +4,19 @@ import { BentoGrid } from '@/components/bento/BentoGrid';
 import { VncCard } from '@/components/vnc/VncCard';
 import { useVncSensor } from '@/hooks/useVncSensor';
 import { animated, to } from '@react-spring/web';
+import { Spotlight } from '@/components/ui/Spotlight';
+import { GridBackground } from '@/components/ui/GridBackground';
+import { FloatingOrbs } from '@/components/ui/FloatingOrbs';
+import { StarField } from '@/components/ui/StarField';
+import { FestivalEffects } from '@/components/ui/FestivalEffects';
 
 export default function Home() {
   const { x, y, values, requestAccess, isMobile, permissionGranted, needsPermission } = useVncSensor();
 
   return (
     <main className="bg-black text-white overflow-hidden font-sans selection:bg-pink-500/30">
+      {/* Festival Effects - Shows automatically based on date */}
+      <FestivalEffects />
       
       {/* Mobile View: Centered Card with Tilt */}
       <div className="lg:hidden w-full fixed inset-0 flex flex-col items-center justify-center bg-gradient-to-b from-gray-900 to-black">
@@ -42,11 +49,19 @@ export default function Home() {
       </div>
 
       {/* Desktop View: Dashboard */}
-      <div className="hidden lg:flex w-full h-screen max-w-[1600px] mx-auto">
+      <div className="hidden lg:flex w-full h-screen max-w-[1600px] mx-auto relative">
+        {/* Background effects */}
+        <StarField />
+        <GridBackground />
+        <FloatingOrbs />
+        <Spotlight />
         
         {/* Left Column: Fixed Card */}
-        <div className="w-[400px] h-full flex flex-col items-center justify-center relative z-20 p-8 border-r border-white/5 bg-black/50 backdrop-blur-sm">
+        <div className="w-[400px] h-full flex flex-col items-center justify-center relative z-20 p-8 border-r border-white/5 bg-black/30 backdrop-blur-sm">
           <div className="relative perspective-1000">
+            {/* Glow effect behind card */}
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 via-purple-500/20 to-pink-500/20 blur-3xl scale-110 opacity-60 animate-pulse" />
+            
             <animated.div
               style={{
                 transform: to([x, y], (xVal, yVal) => 
@@ -58,20 +73,17 @@ export default function Home() {
             </animated.div>
           </div>
           
-          <div className="mt-12 text-center space-y-2">
-             <p className="text-xs font-mono text-white/40">VNC // VIRTUAL NAME CARD</p>
-             <p className="text-[10px] text-white/20">EST. 2025</p>
+          <div className="mt-12 text-center space-y-3">
+             <div className="flex items-center justify-center gap-2">
+               <div className="w-1 h-1 rounded-full bg-blue-400 animate-pulse" />
+               <p className="text-xs font-mono text-white/40 uppercase tracking-wider">VNC // Virtual Name Card</p>
+             </div>
+             <p className="text-[10px] text-white/20 font-mono">Est. 2025 • Interactive Portfolio</p>
           </div>
         </div>
 
         {/* Right Column: Bento Grid */}
-        <div className="flex-1 h-full relative z-10 bg-gradient-to-br from-gray-900 to-black">
-          {/* Background Mesh for Desktop */}
-          <div className="absolute inset-0 opacity-20 pointer-events-none">
-             <div className="absolute top-[-10%] right-[-10%] w-[80%] h-[80%] bg-[radial-gradient(circle_at_50%_50%,_rgba(0,112,243,0.2),_transparent_70%)]" />
-             <div className="absolute bottom-[-10%] left-[-10%] w-[80%] h-[80%] bg-[radial-gradient(circle_at_50%_50%,_rgba(255,0,128,0.15),_transparent_70%)]" />
-          </div>
-          
+        <div className="flex-1 h-full relative z-10">
           <BentoGrid />
         </div>
       </div>
