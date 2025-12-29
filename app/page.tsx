@@ -43,9 +43,16 @@ export default function Home() {
         )}
         
         {/* Mobile Hint */}
-        <div className="absolute bottom-12 left-0 w-full text-center text-white/30 text-xs pointer-events-none animate-pulse">
+        {/* <div className="absolute bottom-12 left-0 w-full text-center text-white/30 text-xs pointer-events-none animate-pulse">
           {permissionGranted ? 'TILT DEVICE TO EXPLORE' : 'TAP TO ENABLE MOTION SENSORS'}
-        </div>
+        </div> */}
+        <div className="mt-12 text-center space-y-3">
+             <div className="flex items-center justify-center gap-2">
+               <div className="w-1 h-1 rounded-full bg-blue-400 animate-pulse" />
+               <p className="text-xs font-mono text-white/40 uppercase tracking-wider">VNC // Virtual Name Card</p>
+             </div>
+             <p className="text-[10px] text-white/20 font-mono">Est. 2025 • Interactive Portfolio</p>
+          </div>
       </div>
 
       {/* Desktop View: Dashboard */}
