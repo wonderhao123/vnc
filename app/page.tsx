@@ -6,13 +6,13 @@ import { useVncSensor } from '@/hooks/useVncSensor';
 import { animated, to } from '@react-spring/web';
 
 export default function Home() {
-  const { x, y, values } = useVncSensor();
+  const { x, y, values, requestAccess, isMobile, permissionGranted, needsPermission } = useVncSensor();
 
   return (
-    <main className="min-h-screen bg-black text-white overflow-hidden font-sans selection:bg-pink-500/30">
+    <main className="bg-black text-white overflow-hidden font-sans selection:bg-pink-500/30">
       
       {/* Mobile View: Centered Card with Tilt */}
-      <div className="lg:hidden w-full h-screen fixed inset-0 flex flex-col items-center justify-center bg-gradient-to-b from-gray-900 to-black">
+      <div className="lg:hidden w-full fixed inset-0 flex flex-col items-center justify-center bg-gradient-to-b from-gray-900 to-black">
         <div className="relative perspective-1000">
           <animated.div
             style={{
@@ -25,9 +25,19 @@ export default function Home() {
           </animated.div>
         </div>
         
+        {/* Permission Request Button (iOS) */}
+        {isMobile && needsPermission && !permissionGranted && (
+          <button
+            onClick={requestAccess}
+            className="absolute bottom-24 px-6 py-3 bg-white text-black font-bold rounded-full hover:bg-gray-200 transition-colors shadow-lg"
+          >
+            Enable Device Motion
+          </button>
+        )}
+        
         {/* Mobile Hint */}
         <div className="absolute bottom-12 left-0 w-full text-center text-white/30 text-xs pointer-events-none animate-pulse">
-          TILT DEVICE TO EXPLORE
+          {permissionGranted ? 'TILT DEVICE TO EXPLORE' : 'TAP TO ENABLE MOTION SENSORS'}
         </div>
       </div>
 
