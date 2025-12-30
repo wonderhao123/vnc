@@ -204,7 +204,7 @@ export function VncCard({ x, y, isFloating = false }: VncCardProps) {
                  animate={controls}
                >
                  <img 
-                   src="/company_logo.svg" 
+                   src={`${BASE_PATH}/company_logo.svg`} 
                    alt="NODEGRIP" 
                    className="h-8 w-auto opacity-90"
                    style={{ filter: 'drop-shadow(0 0 8px rgba(255,255,255,0.3))' }}
