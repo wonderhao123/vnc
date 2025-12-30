@@ -11,17 +11,20 @@ interface HoloOverlayProps {
   touchTiltY?: number;
 }
 
+const BASE_PATH = process.env.NODE_ENV === 'production' ? '/vnc' : '';
+const LOGO_PATH = `${BASE_PATH}/logo.svg`;
+
 export function HoloOverlay({ x, y, isFlipped = false, touchTiltX = 0, touchTiltY = 0 }: HoloOverlayProps) {
   // Attempt to use the public `logo.svg` if available. If loading fails,
   // fall back to a small inline dot-pattern to avoid runtime 404 noise.
-  const [logoPattern, setLogoPattern] = useState<string>('/logo.svg');
+  const [logoPattern, setLogoPattern] = useState<string>(LOGO_PATH);;
 
   useEffect(() => {
     let mounted = true;
     const img = new Image();
-    img.src = '/logo.svg';
+    img.src = LOGO_PATH;
     img.onload = () => {
-      if (mounted) setLogoPattern('/logo.svg');
+      if (mounted) setLogoPattern(LOGO_PATH);
     };
     img.onerror = () => {
       if (!mounted) return;
