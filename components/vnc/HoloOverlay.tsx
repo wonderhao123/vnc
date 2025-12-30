@@ -18,10 +18,17 @@ export function HoloOverlay({ x, y, isFlipped = false, touchTiltX = 0, touchTilt
 
   useEffect(() => {
     let mounted = true;
+
+    // Resolve asset prefix at runtime. Next.js exposes assetPrefix on __NEXT_DATA__ when exported with basePath/assetPrefix.
+    const runtimePrefix = (typeof window !== 'undefined' && (window as any).__NEXT_DATA__ && (window as any).__NEXT_DATA__.assetPrefix)
+      ? (window as any).__NEXT_DATA__.assetPrefix.replace(/\/$/, '')
+      : '';
+
+    const candidate = `${runtimePrefix}/logo.svg`;
     const img = new Image();
-    img.src = '/logo.svg';
+    img.src = candidate;
     img.onload = () => {
-      if (mounted) setLogoPattern('/logo.svg');
+      if (mounted) setLogoPattern(candidate);
     };
     img.onerror = () => {
       if (!mounted) return;
