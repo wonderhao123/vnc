@@ -19,7 +19,7 @@ export default function Home() {
       <FestivalEffects />
       
       {/* Mobile View: Centered Card with Tilt */}
-      <div className="lg:hidden w-full fixed inset-0 flex flex-col items-center justify-center bg-gradient-to-b from-gray-900 to-black">
+      <div className="lg:hidden w-full fixed inset-0 h-screen flex flex-col items-center justify-center bg-gradient-to-b from-gray-900 to-black">
         <div className="relative perspective-1000">
           <animated.div
             style={{
