@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { animated, SpringValue, to } from '@react-spring/web';
 
 interface HoloOverlayProps {
@@ -11,33 +12,50 @@ interface HoloOverlayProps {
 }
 
 export function HoloOverlay({ x, y, isFlipped = false, touchTiltX = 0, touchTiltY = 0 }: HoloOverlayProps) {
-  // Simple dot pattern instead of logo to avoid 404 issues
-  const dotPattern = 'data:image/svg+xml,%3Csvg width="20" height="20" xmlns="http://www.w3.org/2000/svg"%3E%3Ccircle cx="10" cy="10" r="2" fill="%23ffffff" opacity="0.3"/%3E%3C/svg%3E';
+  // Attempt to use the public `logo.svg` if available. If loading fails,
+  // fall back to a small inline dot-pattern to avoid runtime 404 noise.
+  const [logoPattern, setLogoPattern] = useState<string>('/logo.svg');
+
+  useEffect(() => {
+    let mounted = true;
+    const img = new Image();
+    img.src = '/logo.svg';
+    img.onload = () => {
+      if (mounted) setLogoPattern('/logo.svg');
+    };
+    img.onerror = () => {
+      if (!mounted) return;
+      // fallback inline SVG data URI (small dot pattern)
+      setLogoPattern('data:image/svg+xml,%3Csvg width="20" height="20" xmlns="http://www.w3.org/2000/svg"%3E%3Ccircle cx="10" cy="10" r="2" fill="%23ffffff" opacity="0.3"/%3E%3C/svg%3E');
+    };
+
+    return () => { mounted = false; };
+  }, []);
 
   return (
     <div className="absolute inset-0 z-10 pointer-events-none rounded-xl overflow-hidden">
       {/* Deep Blue Base Gradient */}
       <div className="absolute inset-0 bg-gradient-to-br from-blue-900/40 via-slate-900/40 to-black/60 mix-blend-multiply" />
 
-      {/* Repeated Logo Pattern - Holographic Layer 1 (Depth) - Reduced quantity */}
+      {/* Repeated Logo Pattern - Holographic Layer 1 (Depth) */}
       <animated.div 
         className="absolute inset-[-50%] w-[200%] h-[200%] opacity-25 mix-blend-color-dodge"
         style={{
-          backgroundImage: `url("${dotPattern}")`,
-          backgroundSize: '120px 120px', // Larger = fewer logos
+          backgroundImage: `url("${logoPattern}")`,
+          backgroundSize: '120px 120px',
           transform: to([x, y], (xVal, yVal) => 
             `translate(${xVal * 30}px, ${yVal * 30}px) rotate(-10deg)`
           ),
         }}
       />
 
-      {/* Repeated Logo Pattern - Holographic Layer 2 (Parallax) - Reduced quantity */}
+      {/* Repeated Logo Pattern - Holographic Layer 2 (Parallax) */}
       <animated.div 
         className="absolute inset-[-50%] w-[200%] h-[200%] opacity-15 mix-blend-overlay"
         style={{
-          backgroundImage: `url("${dotPattern}")`,
-          backgroundSize: '120px 120px', // Larger = fewer logos
-          backgroundPosition: '60px 60px', // Offset
+          backgroundImage: `url("${logoPattern}")`,
+          backgroundSize: '120px 120px',
+          backgroundPosition: '60px 60px',
           transform: to([x, y], (xVal, yVal) => 
             `translate(${xVal * 60}px, ${yVal * 60}px) rotate(-10deg)`
           ),
