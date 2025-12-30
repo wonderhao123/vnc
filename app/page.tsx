@@ -11,7 +11,7 @@ import { StarField } from '@/components/ui/StarField';
 import { FestivalEffects } from '@/components/ui/FestivalEffects';
 
 export default function Home() {
-  const { x, y } = useVncSensor();
+  const { x, y, values, requestAccess, isMobile, permissionGranted, needsPermission } = useVncSensor();
 
   return (
     <main className="bg-black text-white overflow-hidden font-sans selection:bg-pink-500/30">
@@ -28,7 +28,7 @@ export default function Home() {
               )
             }}
           >
-            <VncCard x={x} y={y} isFloating />
+            <VncCard x={x} y={y} isFloating touchTiltX={values.tiltX} touchTiltY={values.tiltY} />
           </animated.div>
         </div>
         
@@ -62,7 +62,7 @@ export default function Home() {
                 )
               }}
             >
-              <VncCard x={x} y={y} isFloating />
+              <VncCard x={x} y={y} isFloating touchTiltX={values.tiltX} touchTiltY={values.tiltY} />
             </animated.div>
           </div>
           

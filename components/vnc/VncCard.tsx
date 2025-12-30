@@ -12,12 +12,14 @@ interface VncCardProps {
   x: SpringValue<number>;
   y: SpringValue<number>;
   isFloating?: boolean; // For desktop mode
+  touchTiltX?: number;
+  touchTiltY?: number;
 }
 
 const BASE_PATH = process.env.NODE_ENV === 'production' ? '/vnc' : '';
 const LOGO_PATH = `${BASE_PATH}/company_logo.svg`;
 
-export function VncCard({ x, y, isFloating = false }: VncCardProps) {
+export function VncCard({ x, y, isFloating = false, touchTiltX, touchTiltY }: VncCardProps) {
   const [isFlipped, setIsFlipped] = useState(false);
   const [tapCount, setTapCount] = useState(0);
   const [isExploded, setIsExploded] = useState(false);
@@ -176,8 +178,8 @@ export function VncCard({ x, y, isFloating = false }: VncCardProps) {
             x={x} 
             y={y} 
             isFlipped={isFlipped} 
-            touchTiltX={springRotateX.get()} 
-            touchTiltY={springRotateY.get()} 
+            touchTiltX={typeof touchTiltX === 'number' ? touchTiltX : springRotateX.get()} 
+            touchTiltY={typeof touchTiltY === 'number' ? touchTiltY : springRotateY.get()} 
           />
           
           {/* Enhanced glow on hover (desktop only) */}
@@ -270,8 +272,8 @@ export function VncCard({ x, y, isFloating = false }: VncCardProps) {
             x={x} 
             y={y} 
             isFlipped={isFlipped} 
-            touchTiltX={springRotateX.get()} 
-            touchTiltY={springRotateY.get()} 
+            touchTiltX={typeof touchTiltX === 'number' ? touchTiltX : springRotateX.get()} 
+            touchTiltY={typeof touchTiltY === 'number' ? touchTiltY : springRotateY.get()} 
           />
           
           {/* Grid Pattern Overlay */}
