@@ -52,6 +52,15 @@ export function FestivalEffects() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [festival, setFestival] = useState<FestivalConfig>(getCurrentFestival());
 
+  // If a festival is active on load, show effects briefly then hide after 8s
+  useEffect(() => {
+    if (!festival.type) return;
+    const timer = setTimeout(() => {
+      setFestival({ type: null, name: '' });
+    }, 8000);
+    return () => clearTimeout(timer);
+  }, [festival.type]);
+
   useEffect(() => {
     if (!festival.type) return;
 
@@ -381,20 +390,25 @@ export function FestivalEffects() {
     };
   }, [festival]);
 
-  if (!festival.type) return null;
-
   return (
     <>
-      <canvas
-        ref={canvasRef}
-        className="fixed inset-0 pointer-events-none z-50"
-        style={{ mixBlendMode: festival.type === 'sparkles' ? 'screen' : 'normal' }}
-      />
-      {/* Festival label */}
-      <div className="fixed top-4 right-4 z-50 pointer-events-none">
-        <div className="px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white/80 text-xs font-mono">
-          ✨ {festival.name}
-        </div>
+      {/* Canvas only renders when a festival is active */}
+      {festival.type && (
+        <canvas
+          ref={canvasRef}
+          className="fixed inset-0 pointer-events-none z-50"
+          style={{ mixBlendMode: festival.type === 'sparkles' ? 'screen' : 'normal' }}
+        />
+      )}
+
+      {/* Festival label (always visible) - clickable to retrigger today's festival */}
+      <div className="fixed bottom-2 right-2 z-50 pointer-events-auto">
+        <button
+          onClick={() => setFestival(getCurrentFestival())}
+          className="px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white/80 text-xs font-mono hover:bg-white/20 transition"
+        >
+          ✨ {getCurrentFestival().name || 'Festival'}
+        </button>
       </div>
     </>
   );
