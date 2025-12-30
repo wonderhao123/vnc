@@ -14,8 +14,8 @@ interface VncCardProps {
   isFloating?: boolean; // For desktop mode
 }
 
-const isProd = process.env.NODE_ENV === 'production';
-const BASE_PATH = isProd ? '/vnc' : '';
+const BASE_PATH = process.env.NODE_ENV === 'production' ? '/vnc' : '';
+const LOGO_PATH = `${BASE_PATH}/company_logo.svg`;
 
 export function VncCard({ x, y, isFloating = false }: VncCardProps) {
   const [isFlipped, setIsFlipped] = useState(false);
@@ -207,7 +207,7 @@ export function VncCard({ x, y, isFloating = false }: VncCardProps) {
                  animate={controls}
                >
                  <img 
-                   src={`${BASE_PATH}/company_logo.svg`} 
+                   src={LOGO_PATH} 
                    alt="NODEGRIP" 
                    className="h-8 w-auto opacity-90"
                    style={{ filter: 'drop-shadow(0 0 8px rgba(255,255,255,0.3))' }}
@@ -287,7 +287,7 @@ export function VncCard({ x, y, isFloating = false }: VncCardProps) {
             {/* Header with Company Logo */}
             <div className="flex items-center justify-between mb-6 border-b border-cyan-400/20 pb-4">
               <img 
-                src={`${BASE_PATH}/company_logo.svg`} 
+                src={LOGO_PATH} 
                 alt="NODEGRIP" 
                 className="h-6 w-auto opacity-80"
                 style={{ filter: 'drop-shadow(0 0 6px rgba(6,182,212,0.3))' }}
