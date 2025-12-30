@@ -295,7 +295,7 @@ export function VncCard({ x, y, isFloating = false }: VncCardProps) {
             </div>
             
             {/* Social Grid */}
-            <div className="grid grid-cols-3 gap-3 mb-auto">
+            <div className="grid grid-cols-2 gap-3 mb-auto">
               {VNC_DATA.profile.socials.map((social, index) => {
                 const Icon = IconMap[social.icon] || Globe;
                 return (

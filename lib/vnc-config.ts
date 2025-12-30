@@ -11,9 +11,9 @@ export const VNC_DATA = {
       location: "Kuala Lumpur, Malaysia"
     },
     socials: [
-      { id: 'github', icon: 'Github', url: 'https://github.com/carlchong', label: 'GitHub' },
-      { id: 'linkedin', icon: 'Linkedin', url: 'https://linkedin.com/in/carlchong', label: 'LinkedIn' },
-      { id: 'twitter', icon: 'Twitter', url: 'https://twitter.com/carlchong', label: 'Twitter' },
+      { id: 'github', icon: 'Github', url: 'https://github.com/wonderhao123', label: 'GitHub' },
+      { id: 'linkedin', icon: 'Linkedin', url: 'https://www.linkedin.com/in/kah-hao-chong-83581926b/', label: 'LinkedIn' },
+      // { id: 'twitter', icon: 'Twitter', url: 'https://twitter.com/wonderhao123', label: 'Twitter' },
     ]
   },
   theme: {
