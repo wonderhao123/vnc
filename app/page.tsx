@@ -42,7 +42,7 @@ export default function Home() {
       </div>
 
       {/* Desktop View: Dashboard */}
-      <div className="hidden lg:flex w-full h-screen max-w-[1600px] mx-auto relative">
+      <div className="hidden lg:flex w-full h-screen mx-auto relative">
         {/* Background effects */}
         <StarField />
         <GridBackground />

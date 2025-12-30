@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect, useRef, useCallback } from 'react';
-import { motion, useAnimation, useMotionValue, useSpring } from 'framer-motion';
+import { useState, useEffect, useRef } from 'react';
+import { motion, useMotionValue, useSpring } from 'framer-motion';
 import { SpringValue } from '@react-spring/web';
 import { VNC_DATA } from '@/lib/vnc-config';
 import { HoloOverlay } from './HoloOverlay';
@@ -21,9 +21,6 @@ const LOGO_PATH = `${BASE_PATH}/company_logo.svg`;
 
 export function VncCard({ x, y, isFloating = false, touchTiltX, touchTiltY }: VncCardProps) {
   const [isFlipped, setIsFlipped] = useState(false);
-  const [tapCount, setTapCount] = useState(0);
-  const [isExploded, setIsExploded] = useState(false);
-  const controls = useAnimation();
   
   // Touch interaction state
   const [isTouching, setIsTouching] = useState(false);
@@ -38,36 +35,24 @@ export function VncCard({ x, y, isFloating = false, touchTiltX, touchTiltY }: Vn
   const springRotateX = useSpring(touchRotateX, { stiffness: 300, damping: 30 });
   const springRotateY = useSpring(touchRotateY, { stiffness: 300, damping: 30 });
 
-  const triggerExplosion = useCallback(async () => {
-    setIsExploded(true);
-    // Deconstruct animation
-    await controls.start("exploded");
-    
-    // Wait 5 seconds then snap back
-    setTimeout(async () => {
-      await controls.start("initial");
-      setIsExploded(false);
-    }, 5000);
-  }, [controls]);
-
-  // Easter Egg Logic
+  // Apply device-provided tilt when available (prefer device tilt when not actively touching)
   useEffect(() => {
-    if (tapCount >= 5) {
-      triggerExplosion();
-      setTapCount(0);
+    if (typeof touchTiltX === 'number' && !isTouching) {
+      // touchTiltX is degrees (approx). set motion value directly for smooth spring
+      touchRotateX.set(touchTiltX);
     }
-    
-    const timer = setTimeout(() => setTapCount(0), 2000); // Reset if not tapped fast enough
-    return () => clearTimeout(timer);
-  }, [tapCount, triggerExplosion]);
+  }, [touchTiltX, isTouching, touchRotateX]);
 
-  const handleAvatarTap = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setTapCount(prev => prev + 1);
-  };
+  useEffect(() => {
+    if (typeof touchTiltY === 'number' && !isTouching) {
+      touchRotateY.set(touchTiltY);
+    }
+  }, [touchTiltY, isTouching, touchRotateY]);
+
+  // Easter-egg removed: tap/explosion handlers and state cleared
 
   const handleCardClick = () => {
-    if (!isExploded && !isTouching) {
+    if (!isTouching) {
       setIsFlipped(!isFlipped);
     }
   };
@@ -118,9 +103,7 @@ export function VncCard({ x, y, isFloating = false, touchTiltX, touchTiltY }: Vn
     
     // Detect swipe gesture (fast horizontal movement)
     if (velocity > 0.5 && Math.abs(deltaX) > 50 && Math.abs(deltaX) > Math.abs(deltaY)) {
-      if (!isExploded) {
-        setIsFlipped(!isFlipped);
-      }
+      setIsFlipped(!isFlipped);
     }
     // If it's a tap (no significant movement), treat as click
     else if (distance < 10 && deltaTime < 300) {
@@ -128,18 +111,7 @@ export function VncCard({ x, y, isFloating = false, touchTiltX, touchTiltY }: Vn
     }
   };
 
-  // Animation variants for explosion
-  const explosionVariants = {
-    initial: { x: 0, y: 0, rotate: 0, opacity: 1, scale: 1 },
-    exploded: (custom: number) => ({
-      x: (Math.random() - 0.5) * 500,
-      y: (Math.random() - 0.5) * 500,
-      rotate: (Math.random() - 0.5) * 360,
-      opacity: 0.8,
-      scale: 0.5 + Math.random() * 0.5,
-      transition: { duration: 1.5, type: "spring" as const }
-    })
-  };
+  // Easter-egg animation removed
 
   const IconMap: Record<string, React.ComponentType<{ className?: string }>> = {
     Github, Linkedin, Twitter
@@ -202,12 +174,7 @@ export function VncCard({ x, y, isFloating = false, touchTiltX, touchTiltY }: Vn
           <div className="relative z-20 flex flex-col h-full p-8 text-white justify-between">
             <div className="mt-8">
                {/* Company Logo */}
-               <motion.div
-                 className="mb-8"
-                 variants={explosionVariants}
-                 custom={1}
-                 animate={controls}
-               >
+               <motion.div className="mb-8">
                  <img 
                    src={LOGO_PATH} 
                    alt="NODEGRIP" 
@@ -218,21 +185,12 @@ export function VncCard({ x, y, isFloating = false, touchTiltX, touchTiltY }: Vn
 
                <motion.h1 
                  className="text-5xl font-bold tracking-tighter leading-[0.9] mb-3 bg-linear-to-br from-white via-white to-white/50 bg-clip-text text-transparent"
-                 variants={explosionVariants}
-                 custom={2}
-                 animate={controls}
-                 onClick={handleAvatarTap}
                >
                  {VNC_DATA.profile.name.split(' ')[0]}<br />
                  <span className="text-white/40">{VNC_DATA.profile.name.split(' ')[1]}</span>
                </motion.h1>
                
-               <motion.div 
-                 className="flex items-center gap-2 mt-4"
-                 variants={explosionVariants}
-                 custom={3}
-                 animate={controls}
-               >
+               <motion.div className="flex items-center gap-2 mt-4">
                  <div className="h-px w-8 bg-cyan-400" />
                  <p className="text-xs font-medium text-cyan-300 uppercase tracking-widest">
                    {VNC_DATA.profile.role}
@@ -240,12 +198,7 @@ export function VncCard({ x, y, isFloating = false, touchTiltX, touchTiltY }: Vn
                </motion.div>
             </div>
 
-            <motion.div 
-              className="flex justify-between items-end"
-              variants={explosionVariants}
-              custom={4}
-              animate={controls}
-            >
+            <motion.div className="flex justify-between items-end">
                <div className="flex flex-col gap-1">
                  <div className="flex gap-1">
                    {[1,2,3,4,5].map(i => (
