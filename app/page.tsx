@@ -11,7 +11,7 @@ import { StarField } from '@/components/ui/StarField';
 import { FestivalEffects } from '@/components/ui/FestivalEffects';
 
 export default function Home() {
-  const { x, y, values, requestAccess, isMobile, permissionGranted, needsPermission } = useVncSensor();
+  const { x, y } = useVncSensor();
 
   return (
     <main className="bg-black text-white overflow-hidden font-sans selection:bg-pink-500/30">
@@ -19,7 +19,7 @@ export default function Home() {
       <FestivalEffects />
       
       {/* Mobile View: Centered Card with Tilt */}
-      <div className="lg:hidden w-full fixed inset-0 h-screen flex flex-col items-center justify-center bg-gradient-to-b from-gray-900 to-black">
+      <div className="lg:hidden w-full fixed inset-0 flex flex-col items-center justify-center bg-gradient-to-b from-gray-900 to-black">
         <div className="relative perspective-1000">
           <animated.div
             style={{
@@ -28,7 +28,7 @@ export default function Home() {
               )
             }}
           >
-            <VncCard x={x} y={y} isFloating touchTiltX={values.tiltX} touchTiltY={values.tiltY} />
+            <VncCard x={x} y={y} isFloating />
           </animated.div>
         </div>
         
@@ -42,7 +42,7 @@ export default function Home() {
       </div>
 
       {/* Desktop View: Dashboard */}
-      <div className="hidden lg:flex w-full h-screen mx-auto relative">
+      <div className="hidden lg:flex w-full h-screen max-w-[1600px] mx-auto relative">
         {/* Background effects */}
         <StarField />
         <GridBackground />
@@ -62,7 +62,7 @@ export default function Home() {
                 )
               }}
             >
-              <VncCard x={x} y={y} isFloating touchTiltX={values.tiltX} touchTiltY={values.tiltY} />
+              <VncCard x={x} y={y} isFloating />
             </animated.div>
           </div>
           

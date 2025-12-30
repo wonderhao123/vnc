@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useRef } from 'react';
 import { motion, useMotionValue, useSpring } from 'framer-motion';
 import { SpringValue } from '@react-spring/web';
 import { VNC_DATA } from '@/lib/vnc-config';
@@ -12,14 +12,12 @@ interface VncCardProps {
   x: SpringValue<number>;
   y: SpringValue<number>;
   isFloating?: boolean; // For desktop mode
-  touchTiltX?: number;
-  touchTiltY?: number;
 }
 
 const BASE_PATH = process.env.NODE_ENV === 'production' ? '/vnc' : '';
 const LOGO_PATH = `${BASE_PATH}/company_logo.svg`;
 
-export function VncCard({ x, y, isFloating = false, touchTiltX, touchTiltY }: VncCardProps) {
+export function VncCard({ x, y, isFloating = false }: VncCardProps) {
   const [isFlipped, setIsFlipped] = useState(false);
   
   // Touch interaction state
@@ -35,21 +33,7 @@ export function VncCard({ x, y, isFloating = false, touchTiltX, touchTiltY }: Vn
   const springRotateX = useSpring(touchRotateX, { stiffness: 300, damping: 30 });
   const springRotateY = useSpring(touchRotateY, { stiffness: 300, damping: 30 });
 
-  // Apply device-provided tilt when available (prefer device tilt when not actively touching)
-  useEffect(() => {
-    if (typeof touchTiltX === 'number' && !isTouching) {
-      // touchTiltX is degrees (approx). set motion value directly for smooth spring
-      touchRotateX.set(touchTiltX);
-    }
-  }, [touchTiltX, isTouching, touchRotateX]);
-
-  useEffect(() => {
-    if (typeof touchTiltY === 'number' && !isTouching) {
-      touchRotateY.set(touchTiltY);
-    }
-  }, [touchTiltY, isTouching, touchRotateY]);
-
-  // Easter-egg removed: tap/explosion handlers and state cleared
+  
 
   const handleCardClick = () => {
     if (!isTouching) {
@@ -111,7 +95,7 @@ export function VncCard({ x, y, isFloating = false, touchTiltX, touchTiltY }: Vn
     }
   };
 
-  // Easter-egg animation removed
+
 
   const IconMap: Record<string, React.ComponentType<{ className?: string }>> = {
     Github, Linkedin, Twitter
@@ -150,8 +134,8 @@ export function VncCard({ x, y, isFloating = false, touchTiltX, touchTiltY }: Vn
             x={x} 
             y={y} 
             isFlipped={isFlipped} 
-            touchTiltX={typeof touchTiltX === 'number' ? touchTiltX : springRotateX.get()} 
-            touchTiltY={typeof touchTiltY === 'number' ? touchTiltY : springRotateY.get()} 
+            touchTiltX={springRotateX.get()} 
+            touchTiltY={springRotateY.get()} 
           />
           
           {/* Enhanced glow on hover (desktop only) */}
@@ -174,31 +158,35 @@ export function VncCard({ x, y, isFloating = false, touchTiltX, touchTiltY }: Vn
           <div className="relative z-20 flex flex-col h-full p-8 text-white justify-between">
             <div className="mt-8">
                {/* Company Logo */}
-               <motion.div className="mb-8">
+               <div className="mb-8">
                  <img 
                    src={LOGO_PATH} 
                    alt="NODEGRIP" 
                    className="h-8 w-auto opacity-90"
                    style={{ filter: 'drop-shadow(0 0 8px rgba(255,255,255,0.3))' }}
                  />
-               </motion.div>
+               </div>
 
-               <motion.h1 
+               <h1 
                  className="text-5xl font-bold tracking-tighter leading-[0.9] mb-3 bg-linear-to-br from-white via-white to-white/50 bg-clip-text text-transparent"
                >
                  {VNC_DATA.profile.name.split(' ')[0]}<br />
                  <span className="text-white/40">{VNC_DATA.profile.name.split(' ')[1]}</span>
-               </motion.h1>
+               </h1>
                
-               <motion.div className="flex items-center gap-2 mt-4">
+               <div 
+                 className="flex items-center gap-2 mt-4"
+               >
                  <div className="h-px w-8 bg-cyan-400" />
                  <p className="text-xs font-medium text-cyan-300 uppercase tracking-widest">
                    {VNC_DATA.profile.role}
                  </p>
-               </motion.div>
+               </div>
             </div>
 
-            <motion.div className="flex justify-between items-end">
+            <div 
+              className="flex justify-between items-end"
+            >
                <div className="flex flex-col gap-1">
                  <div className="flex gap-1">
                    {[1,2,3,4,5].map(i => (
@@ -212,7 +200,7 @@ export function VncCard({ x, y, isFloating = false, touchTiltX, touchTiltY }: Vn
                  <span>CONNECT</span>
                  <ArrowRight className="w-3 h-3" />
                </div>
-            </motion.div>
+            </div>
           </div>
         </div>
 
@@ -225,8 +213,8 @@ export function VncCard({ x, y, isFloating = false, touchTiltX, touchTiltY }: Vn
             x={x} 
             y={y} 
             isFlipped={isFlipped} 
-            touchTiltX={typeof touchTiltX === 'number' ? touchTiltX : springRotateX.get()} 
-            touchTiltY={typeof touchTiltY === 'number' ? touchTiltY : springRotateY.get()} 
+            touchTiltX={springRotateX.get()} 
+            touchTiltY={springRotateY.get()} 
           />
           
           {/* Grid Pattern Overlay */}
