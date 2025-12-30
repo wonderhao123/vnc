@@ -14,6 +14,9 @@ interface VncCardProps {
   isFloating?: boolean; // For desktop mode
 }
 
+const isProd = process.env.NODE_ENV === 'production';
+const BASE_PATH = isProd ? '/vnc' : '';
+
 export function VncCard({ x, y, isFloating = false }: VncCardProps) {
   const [isFlipped, setIsFlipped] = useState(false);
   const [tapCount, setTapCount] = useState(0);
