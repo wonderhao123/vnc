@@ -1,18 +1,19 @@
 export const VNC_DATA = {
   profile: {
-    name: "Alex Design",
-    role: "Fullstack Architect",
-    avatar: "/assets/avatar.webp", // Placeholder, will need to handle if image doesn't exist
+    name: "Carl Chong",
+    company: "NODEGRIP",
+    role: "Chief Technology Officer",
+    avatar: "/assets/avatar.webp",
     vCard: {
-      phone: "+123456789",
-      email: "aGVsbG9Adm5jLmRlc2lnbg==", // Base64 encoded: hello@vnc.design
-      website: "https://vnc.design",
-      location: "San Francisco, CA"
+      phone: "+60123456789",
+      email: "Y2FybEBub2RlZ3JpcC5jb20=", // Base64 encoded: carl@nodegrip.com
+      website: "https://nodegrip.com",
+      location: "Kuala Lumpur, Malaysia"
     },
     socials: [
-      { id: 'github', icon: 'Github', url: 'https://github.com', label: 'GitHub' },
-      { id: 'linkedin', icon: 'Linkedin', url: 'https://linkedin.com', label: 'LinkedIn' },
-      { id: 'twitter', icon: 'Twitter', url: 'https://twitter.com', label: 'Twitter' },
+      { id: 'github', icon: 'Github', url: 'https://github.com/carlchong', label: 'GitHub' },
+      { id: 'linkedin', icon: 'Linkedin', url: 'https://linkedin.com/in/carlchong', label: 'LinkedIn' },
+      { id: 'twitter', icon: 'Twitter', url: 'https://twitter.com/carlchong', label: 'Twitter' },
     ]
   },
   theme: {

@@ -15,7 +15,7 @@ function getCurrentFestival(): FestivalConfig {
   const month = now.getMonth() + 1; // 1-12
   const day = now.getDate();
 
-  // New Year (Dec 31 - Jan 3)
+  // New Year (Dec 28 - Jan 3)
   if ((month === 12 && day >= 28) || (month === 1 && day <= 3)) {
     return { type: 'fireworks', name: 'New Year' };
   }
@@ -50,7 +50,7 @@ function getCurrentFestival(): FestivalConfig {
 
 export function FestivalEffects() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [festival] = useState<FestivalConfig>(getCurrentFestival());
+  const [festival, setFestival] = useState<FestivalConfig>(getCurrentFestival());
 
   useEffect(() => {
     if (!festival.type) return;

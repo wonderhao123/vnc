@@ -1,11 +1,11 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence, useAnimation, useMotionValue, useSpring } from 'framer-motion';
+import { useState, useEffect, useRef, useCallback } from 'react';
+import { motion, useAnimation, useMotionValue, useSpring } from 'framer-motion';
 import { SpringValue } from '@react-spring/web';
 import { VNC_DATA } from '@/lib/vnc-config';
 import { HoloOverlay } from './HoloOverlay';
-import { Github, Linkedin, Twitter, Mail, UserPlus, Globe } from 'lucide-react';
+import { Github, Linkedin, Twitter, UserPlus, Globe, Copy, ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface VncCardProps {
@@ -33,18 +33,7 @@ export function VncCard({ x, y, isFloating = false }: VncCardProps) {
   const springRotateX = useSpring(touchRotateX, { stiffness: 300, damping: 30 });
   const springRotateY = useSpring(touchRotateY, { stiffness: 300, damping: 30 });
 
-  // Easter Egg Logic
-  useEffect(() => {
-    if (tapCount >= 5) {
-      triggerExplosion();
-      setTapCount(0);
-    }
-    
-    const timer = setTimeout(() => setTapCount(0), 2000); // Reset if not tapped fast enough
-    return () => clearTimeout(timer);
-  }, [tapCount]);
-
-  const triggerExplosion = async () => {
+  const triggerExplosion = useCallback(async () => {
     setIsExploded(true);
     // Deconstruct animation
     await controls.start("exploded");
@@ -54,7 +43,18 @@ export function VncCard({ x, y, isFloating = false }: VncCardProps) {
       await controls.start("initial");
       setIsExploded(false);
     }, 5000);
-  };
+  }, [controls]);
+
+  // Easter Egg Logic
+  useEffect(() => {
+    if (tapCount >= 5) {
+      triggerExplosion();
+      setTapCount(0);
+    }
+    
+    const timer = setTimeout(() => setTapCount(0), 2000); // Reset if not tapped fast enough
+    return () => clearTimeout(timer);
+  }, [tapCount, triggerExplosion]);
 
   const handleAvatarTap = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -136,14 +136,14 @@ export function VncCard({ x, y, isFloating = false }: VncCardProps) {
     })
   };
 
-  const IconMap: Record<string, any> = {
+  const IconMap: Record<string, React.ComponentType<{ className?: string }>> = {
     Github, Linkedin, Twitter
   };
 
   return (
     <div 
       ref={cardRef}
-      className="relative w-[320px] h-[480px] perspective-1000 cursor-pointer group touch-none" 
+      className="relative w-[320px] h-120 perspective-1000 cursor-pointer group touch-none" 
       onClick={handleCardClick}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
@@ -168,7 +168,7 @@ export function VncCard({ x, y, isFloating = false }: VncCardProps) {
         }}
       >
         {/* FRONT FACE */}
-        <div className="absolute inset-0 w-full h-full backface-hidden rounded-2xl bg-black/40 backdrop-blur-xl border border-white/10 shadow-2xl overflow-hidden will-change-transform group-hover:border-white/20 transition-colors duration-300">
+        <div className="absolute inset-0 w-full h-full backface-hidden rounded-2xl bg-black/80 backdrop-blur-xl border border-white/10 shadow-2xl overflow-hidden will-change-transform group-hover:border-white/20 transition-colors duration-300">
           <HoloOverlay 
             x={x} 
             y={y} 
@@ -180,61 +180,79 @@ export function VncCard({ x, y, isFloating = false }: VncCardProps) {
           {/* Enhanced glow on hover (desktop only) */}
           {isFloating && (
             <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-              <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-purple-500/10 to-pink-500/10" />
+              <div className="absolute inset-0 bg-linear-to-br from-cyan-500/10 via-blue-500/10 to-cyan-500/10" />
             </div>
           )}
           
-          <div className="relative z-20 flex flex-col items-center justify-center h-full p-6 text-white space-y-6">
-            <motion.div 
-              className="w-32 h-32 rounded-full border-2 border-white/30 overflow-hidden shadow-lg relative group/avatar"
-              variants={explosionVariants}
-              custom={1}
-              animate={controls}
-              onClick={handleAvatarTap}
-              whileTap={{ scale: 0.95 }}
-              whileHover={{ scale: 1.05 }}
-            >
-               {/* Animated ring on hover */}
-               <div className="absolute inset-0 rounded-full border-2 border-blue-400/0 group-hover/avatar:border-blue-400/50 transition-all duration-300 scale-105" />
-               
-               {/* Fallback avatar with gradient */}
-               <div className="w-full h-full bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600 flex items-center justify-center text-3xl font-bold relative overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-transparent opacity-0 group-hover/avatar:opacity-100 transition-opacity duration-300" />
-                  <span className="relative z-10">{VNC_DATA.profile.name.charAt(0)}</span>
-               </div>
-               {/* <Image src={VNC_DATA.profile.avatar} alt="Avatar" fill className="object-cover" /> */}
-            </motion.div>
+          {/* Decorative Elements */}
+          <div className="absolute top-0 left-0 w-full h-full pointer-events-none overflow-hidden">
+            <div className="absolute top-6 left-6 w-2 h-2 bg-white/50 rounded-full animate-pulse" />
+            <div className="absolute top-6 right-6 text-[10px] font-mono text-white/30 tracking-widest">VNC-ID // 8842</div>
+            
+            {/* Diagonal Lines */}
+            <div className="absolute -right-10 top-20 w-40 h-px bg-white/10 rotate-45" />
+            <div className="absolute -right-10 top-24 w-40 h-px bg-white/10 rotate-45" />
+          </div>
 
-            <div className="text-center space-y-2">
-              <motion.h1 
-                className="text-3xl font-bold tracking-tight bg-gradient-to-r from-white via-blue-100 to-white bg-clip-text text-transparent"
-                variants={explosionVariants}
-                custom={2}
-                animate={controls}
-              >
-                {VNC_DATA.profile.name}
-              </motion.h1>
-              <motion.p 
-                className="text-sm font-medium text-white/60 uppercase tracking-widest"
-                variants={explosionVariants}
-                custom={3}
-                animate={controls}
-              >
-                {VNC_DATA.profile.role}
-              </motion.p>
+          <div className="relative z-20 flex flex-col h-full p-8 text-white justify-between">
+            <div className="mt-8">
+               {/* Company Logo */}
+               <motion.div
+                 className="mb-8"
+                 variants={explosionVariants}
+                 custom={1}
+                 animate={controls}
+               >
+                 <img 
+                   src="/company_logo.svg" 
+                   alt="NODEGRIP" 
+                   className="h-8 w-auto opacity-90"
+                   style={{ filter: 'drop-shadow(0 0 8px rgba(255,255,255,0.3))' }}
+                 />
+               </motion.div>
+
+               <motion.h1 
+                 className="text-5xl font-bold tracking-tighter leading-[0.9] mb-3 bg-linear-to-br from-white via-white to-white/50 bg-clip-text text-transparent"
+                 variants={explosionVariants}
+                 custom={2}
+                 animate={controls}
+                 onClick={handleAvatarTap}
+               >
+                 {VNC_DATA.profile.name.split(' ')[0]}<br />
+                 <span className="text-white/40">{VNC_DATA.profile.name.split(' ')[1]}</span>
+               </motion.h1>
+               
+               <motion.div 
+                 className="flex items-center gap-2 mt-4"
+                 variants={explosionVariants}
+                 custom={3}
+                 animate={controls}
+               >
+                 <div className="h-px w-8 bg-cyan-400" />
+                 <p className="text-xs font-medium text-cyan-300 uppercase tracking-widest">
+                   {VNC_DATA.profile.role}
+                 </p>
+               </motion.div>
             </div>
 
             <motion.div 
-              className="mt-8 flex flex-col items-center gap-2"
+              className="flex justify-between items-end"
               variants={explosionVariants}
               custom={4}
               animate={controls}
             >
-               <div className="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-xs font-mono text-white/50">
-                 TAP TO FLIP
+               <div className="flex flex-col gap-1">
+                 <div className="flex gap-1">
+                   {[1,2,3,4,5].map(i => (
+                     <div key={i} className={`w-1 h-1 rounded-full ${i <= 4 ? 'bg-cyan-400/60' : 'bg-white/10'}`} />
+                   ))}
+                 </div>
+                 <span className="text-[9px] font-mono text-cyan-300/40">C-LEVEL</span>
                </div>
-               <div className="text-[10px] text-white/30 uppercase tracking-wider">
-                 or swipe horizontally
+               
+               <div className="flex items-center gap-2 text-xs font-mono text-cyan-300/60 group-hover:text-cyan-300 transition-colors">
+                 <span>CONNECT</span>
+                 <ArrowRight className="w-3 h-3" />
                </div>
             </motion.div>
           </div>
@@ -242,7 +260,7 @@ export function VncCard({ x, y, isFloating = false }: VncCardProps) {
 
         {/* BACK FACE */}
         <div 
-          className="absolute inset-0 w-full h-full backface-hidden rounded-2xl bg-black/80 backdrop-blur-xl border border-white/10 shadow-2xl overflow-hidden will-change-transform group-hover:border-white/20 transition-colors duration-300"
+          className="absolute inset-0 w-full h-full backface-hidden rounded-2xl bg-[#0a0a0a] backdrop-blur-xl border border-white/10 shadow-2xl overflow-hidden will-change-transform group-hover:border-white/20 transition-colors duration-300"
           style={{ transform: "rotateY(180deg)" }}
         >
           <HoloOverlay 
@@ -253,20 +271,31 @@ export function VncCard({ x, y, isFloating = false }: VncCardProps) {
             touchTiltY={springRotateY.get()} 
           />
           
-          {/* Enhanced glow on hover (desktop only) */}
-          {isFloating && (
-            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-              <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-pink-500/10 to-blue-500/10" />
-            </div>
-          )}
+          {/* Grid Pattern Overlay */}
+          <div 
+            className="absolute inset-0 opacity-20" 
+            style={{
+              backgroundImage: `radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.15) 1px, transparent 0)`,
+              backgroundSize: '20px 20px'
+            }}
+          />
           
-          <div className="relative z-20 flex flex-col items-center justify-center h-full p-8 text-white space-y-8">
-            <div className="flex items-center gap-2">
-              <div className="w-1 h-1 rounded-full bg-blue-400" />
-              <h2 className="text-xl font-bold bg-gradient-to-r from-white to-blue-200 bg-clip-text text-transparent">Connect</h2>
+          <div className="relative z-20 flex flex-col h-full p-8 text-white">
+            {/* Header with Company Logo */}
+            <div className="flex items-center justify-between mb-6 border-b border-cyan-400/20 pb-4">
+              <img 
+                src="/company_logo.svg" 
+                alt="NODEGRIP" 
+                className="h-6 w-auto opacity-80"
+                style={{ filter: 'drop-shadow(0 0 6px rgba(6,182,212,0.3))' }}
+              />
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
+              </div>
             </div>
             
-            <div className="grid grid-cols-3 gap-4 w-full">
+            {/* Social Grid */}
+            <div className="grid grid-cols-3 gap-3 mb-auto">
               {VNC_DATA.profile.socials.map((social, index) => {
                 const Icon = IconMap[social.icon] || Globe;
                 return (
@@ -275,51 +304,51 @@ export function VncCard({ x, y, isFloating = false }: VncCardProps) {
                     href={social.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex flex-col items-center justify-center p-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 transition-all gap-2 group/icon relative overflow-hidden"
+                    className="flex flex-col items-center justify-center p-3 rounded-xl bg-cyan-950/30 hover:bg-cyan-900/40 border border-cyan-500/10 hover:border-cyan-400/30 transition-all group/item relative overflow-hidden aspect-square backdrop-blur-sm"
                     onClick={(e) => e.stopPropagation()}
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.1 * index }}
-                    whileHover={{ scale: 1.05, y: -2 }}
                   >
-                    {/* Shimmer effect on hover */}
-                    <div className="absolute inset-0 opacity-0 group-hover/icon:opacity-100 transition-opacity">
-                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover/icon:translate-x-full transition-transform duration-700" />
+                    {/* Hover Glow Background */}
+                    <div className="absolute inset-0 bg-cyan-400/5 opacity-0 group-hover/item:opacity-100 transition-opacity" />
+                    
+                    {/* Tech Corners */}
+                    <div className="absolute top-1.5 right-1.5 w-1.5 h-1.5 border-t border-r border-cyan-500/30 group-hover/item:border-cyan-400 transition-colors" />
+                    <div className="absolute bottom-1.5 left-1.5 w-1.5 h-1.5 border-b border-l border-cyan-500/30 group-hover/item:border-cyan-400 transition-colors" />
+
+                    <div className="p-2 text-cyan-400/80 group-hover/item:text-cyan-300 group-hover/item:scale-110 transition-all duration-300 mb-2">
+                      <Icon className="w-5 h-5" />
                     </div>
-                    <Icon className="w-6 h-6 text-white/70 group-hover/icon:text-white transition-colors relative z-10" />
-                    <span className="text-[10px] uppercase tracking-wider text-white/40 group-hover/icon:text-white/60 transition-colors relative z-10">{social.label}</span>
+                    <span className="text-[9px] font-mono uppercase tracking-wider text-cyan-200/50 group-hover/item:text-cyan-100 transition-colors">{social.label}</span>
                   </motion.a>
                 );
               })}
             </div>
 
-            <div className="flex flex-col w-full gap-3 mt-4">
+            {/* Action Buttons */}
+            <div className="grid grid-cols-2 gap-3 mt-6">
               <motion.button 
-                className="flex items-center justify-center gap-2 w-full py-3 rounded-lg bg-gradient-to-r from-blue-500 to-purple-500 text-white font-bold hover:from-blue-600 hover:to-purple-600 transition-all shadow-lg hover:shadow-blue-500/50 relative overflow-hidden group/btn"
+                className="flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-cyan-400/5 hover:bg-cyan-400/10 border border-cyan-400/10 hover:border-cyan-400/30 transition-all group/btn"
                 onClick={(e) => {
                   e.stopPropagation();
-                  // Logic to download vCard would go here
                   alert("vCard Download Triggered");
                 }}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
               >
-                {/* Shimmer effect */}
-                <div className="absolute inset-0 opacity-0 group-hover/btn:opacity-100 transition-opacity">
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover/btn:translate-x-full transition-transform duration-700" />
-                </div>
-                <UserPlus className="w-4 h-4 relative z-10" />
-                <span className="relative z-10">Add Contact</span>
+                <UserPlus className="w-4 h-4 text-cyan-400 group-hover/btn:scale-110 transition-transform" />
+                <span className="text-[10px] font-mono uppercase tracking-wider text-cyan-300/60">Save</span>
               </motion.button>
               
               <motion.button 
-                className="flex items-center justify-center gap-2 w-full py-3 rounded-lg bg-white/10 text-white font-medium hover:bg-white/20 transition-all border border-white/20 hover:border-white/30 backdrop-blur-sm relative overflow-hidden group/btn"
+                className="flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-cyan-400/5 hover:bg-cyan-400/10 border border-cyan-400/10 hover:border-cyan-400/30 transition-all group/btn"
                 onClick={(e) => {
                   e.stopPropagation();
                   try {
                     const email = atob(VNC_DATA.profile.vCard.email);
                     navigator.clipboard.writeText(email);
-                    alert("Email Copied: " + email);
+                    alert("Email Copied");
                   } catch (err) {
                     console.error("Failed to decode email", err);
                   }
@@ -327,13 +356,17 @@ export function VncCard({ x, y, isFloating = false }: VncCardProps) {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
               >
-                {/* Shimmer effect */}
-                <div className="absolute inset-0 opacity-0 group-hover/btn:opacity-100 transition-opacity">
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover/btn:translate-x-full transition-transform duration-700" />
-                </div>
-                <Mail className="w-4 h-4 relative z-10" />
-                <span className="relative z-10">Copy Email</span>
+                <Copy className="w-4 h-4 text-cyan-400 group-hover/btn:scale-110 transition-transform" />
+                <span className="text-[10px] font-mono uppercase tracking-wider text-cyan-300/60">Copy</span>
               </motion.button>
+            </div>
+            
+            <div className="mt-6 pt-4 border-t border-cyan-400/10 flex justify-between items-center">
+               <span className="text-[9px] text-cyan-300/20 font-mono">NODEGRIP © 2025</span>
+               <div className="flex items-center gap-1">
+                 <div className="w-1 h-1 rounded-full bg-cyan-400 animate-pulse" />
+                 <span className="text-[9px] text-cyan-300/30 font-mono">SECURE</span>
+               </div>
             </div>
           </div>
         </div>
