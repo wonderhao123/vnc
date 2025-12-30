@@ -19,19 +19,6 @@ export function VncCard({ x, y, isFloating = false }: VncCardProps) {
   const [tapCount, setTapCount] = useState(0);
   const [isExploded, setIsExploded] = useState(false);
   const controls = useAnimation();
-
-  // Resolve asset prefix at runtime to avoid 404 when app is served under a basePath/assetPrefix
-  const [companyLogoSrc, setCompanyLogoSrc] = useState('/company_logo.svg');
-  useEffect(() => {
-    try {
-      const pref = (window as any).__NEXT_DATA__?.assetPrefix ?? '';
-      const normalized = pref.endsWith('/') ? pref.slice(0, -1) : pref;
-      const src = `${normalized}/company_logo.svg`;
-      setCompanyLogoSrc(src);
-    } catch (e) {
-      setCompanyLogoSrc('/company_logo.svg');
-    }
-  }, []);
   
   // Touch interaction state
   const [isTouching, setIsTouching] = useState(false);
@@ -216,9 +203,9 @@ export function VncCard({ x, y, isFloating = false }: VncCardProps) {
                  custom={1}
                  animate={controls}
                >
-                 <img
-                   src={companyLogoSrc}
-                   alt="NODEGRIP"
+                 <img 
+                   src="/company_logo.svg" 
+                   alt="NODEGRIP" 
                    className="h-8 w-auto opacity-90"
                    style={{ filter: 'drop-shadow(0 0 8px rgba(255,255,255,0.3))' }}
                  />
@@ -296,9 +283,9 @@ export function VncCard({ x, y, isFloating = false }: VncCardProps) {
           <div className="relative z-20 flex flex-col h-full p-8 text-white">
             {/* Header with Company Logo */}
             <div className="flex items-center justify-between mb-6 border-b border-cyan-400/20 pb-4">
-              <img
-                src={companyLogoSrc}
-                alt="NODEGRIP"
+              <img 
+                src="/company_logo.svg" 
+                alt="NODEGRIP" 
                 className="h-6 w-auto opacity-80"
                 style={{ filter: 'drop-shadow(0 0 6px rgba(6,182,212,0.3))' }}
               />
