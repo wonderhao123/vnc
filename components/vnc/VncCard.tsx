@@ -287,7 +287,7 @@ export function VncCard({ x, y, isFloating = false }: VncCardProps) {
             {/* Header with Company Logo */}
             <div className="flex items-center justify-between mb-6 border-b border-cyan-400/20 pb-4">
               <img 
-                src="/company_logo.svg" 
+                src={`${BASE_PATH}/company_logo.svg`} 
                 alt="NODEGRIP" 
                 className="h-6 w-auto opacity-80"
                 style={{ filter: 'drop-shadow(0 0 6px rgba(6,182,212,0.3))' }}
