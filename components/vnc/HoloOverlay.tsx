@@ -40,27 +40,29 @@ export function HoloOverlay({ x, y, isFlipped = false, touchTiltX = 0, touchTilt
       {/* Deep Blue Base Gradient */}
       <div className="absolute inset-0 bg-gradient-to-br from-blue-900/40 via-slate-900/40 to-black/60 mix-blend-multiply" />
 
-      {/* Repeated Logo Pattern - Holographic Layer 1 (Depth) */}
+      {/* Repeated Logo Pattern - Holographic Layer 1 (reduced count + smaller) */}
       <animated.div 
-        className="absolute inset-[-50%] w-[200%] h-[200%] opacity-25 mix-blend-color-dodge"
+        className="absolute inset-[-30%] w-[160%] h-[160%] opacity-20 mix-blend-color-dodge"
         style={{
           backgroundImage: `url("${logoPattern}")`,
-          backgroundSize: '120px 120px',
+          // smaller visual marks (reduced apparent size)
+          backgroundSize: '80px 80px',
           transform: to([x, y], (xVal, yVal) => 
-            `translate(${xVal * 30}px, ${yVal * 30}px) rotate(-10deg)`
+            `translate(${xVal * 20}px, ${yVal * 20}px) rotate(-10deg)`
           ),
         }}
       />
 
-      {/* Repeated Logo Pattern - Holographic Layer 2 (Parallax) */}
+      {/* Repeated Logo Pattern - Holographic Layer 2 (subtle parallax, lower density) */}
       <animated.div 
-        className="absolute inset-[-50%] w-[200%] h-[200%] opacity-15 mix-blend-overlay"
+        className="absolute inset-[-30%] w-[160%] h-[160%] opacity-8 mix-blend-overlay"
         style={{
           backgroundImage: `url("${logoPattern}")`,
-          backgroundSize: '120px 120px',
-          backgroundPosition: '60px 60px',
+          // match smaller tile size but keep tiles spaced out by reducing coverage
+          backgroundSize: '80px 80px',
+          backgroundPosition: '40px 40px',
           transform: to([x, y], (xVal, yVal) => 
-            `translate(${xVal * 60}px, ${yVal * 60}px) rotate(-10deg)`
+            `translate(${xVal * 40}px, ${yVal * 40}px) rotate(-10deg)`
           ),
         }}
       />
